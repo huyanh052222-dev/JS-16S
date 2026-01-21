@@ -1,170 +1,268 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tag Input</title>
-
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
     <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-            vertical-align: middle;
-        }
-
-        body {
-            margin: 0 auto;
-            font-family: 'Courier New', Courier, monospace;
+        body{
+            margin: 0;
+            font-family: 'Courier New';
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            background-color: aliceblue;
+            justify-content: center;
+            transition: background-color 0.5s ease;
         }
 
-        .tag-input {
-            background-color: #fff;
+        .material-symbols-outlined {
+            vertical-align: middle; 
+        }
+        
+        #toggleBtn{
+            position: fixed;
+            top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background: #2c3e50;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            transition: transform 0.2s;
+        }
+        #toggleBtn:active{ 
+            transform: scale(0.95); 
+        }
+
+
+        .hidden{ 
+            display: none !important; 
+        }
+
+        .container-limit{
+            max-width: 25em;
             padding: 2.5em;
             width: 100%;
-            max-width: 25em; 
+            background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
 
-        .tag-input h2 { margin: 0 0 10px 0; }
-
-        .input-wrap {
+        .input-wrap-limit{
+            margin: 1.5em 0;
             border: 1px #888 solid;
             border-radius: 5px;
             display: flex;
-            margin: 1.5em 0;
             padding: 5px;
             align-items: center;
         }
 
-        .input-wrap input {
-            background: none;
+        .input-wrap-limit input{
             border: none;
+            background: none;
             padding: 0.5em;
-            flex: 1; 
+            flex: 1;
             font-family: inherit;
+            outline: none;
         }
 
-        .input-wrap input:focus { outline: none; }
-
-        .input-wrap span {
-            color: #888;
-            margin-left: 5px;
-        }
-
-        .tags {
+        .tags-limit{
             margin-bottom: 1.5em;
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
         }
 
-        .tag {
-            background-color: #f1f1f1;
+        .tag-item-limit{
             border-radius: 4px;
             padding: 5px 10px;
             display: inline-flex;
             align-items: center;
+            background-color: #f1f1f1;
             border: 1px solid #ddd;
             font-size: 14px;
         }
 
-        .tag b { margin-right: 5px; }
-
-        .tag .remove-btn {
+        .tag-item-limit .remove-btn{
+            margin-left: 5px;
             font-size: 16px;
             cursor: pointer;
             color: #666;
-            font-weight: bold;
         }
+        .tag-item-limit .remove-btn:hover{
+            color: red; 
         
-        .tag .remove-btn:hover { color: red; }
-        
-        .limit-reached { border-color: red; }
+        }
+
+        .container-choice {
+            text-align: center;
+            color: #fff;
+            width: 100%;
+            max-width: 700px;
+
+        }
+
+        .container-choice h3{ 
+            margin-bottom: 20px; 
+        }
+
+        .textarea-choice{
+            border: none;
+            width: 100%;
+            height: 100px;
+            font-size: 18px;
+            padding: 20px;
+            border-radius: 10px;
+            outline: none;
+            resize: none;
+            color: #333;
+            box-sizing: border-box;
+        }
+
+        .tags-choice{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .tag-item-choice{
+            display: inline-block;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            background-color: #f0932b;
+            color: #fff;
+        }
     </style>
 </head>
-<body>
-    <div class="tag-input">
-        <h2>Tags</h2>
-        
-        <div class="tags"></div>
+<body style="background-color: aliceblue;">
 
-        <form action="" id="tagForm">
-            <div class="input-wrap" id="inputBox">
-                <span class="material-symbols-outlined">tag</span>
-                <input 
-                    type="text"
-                    placeholder="Add a tag..."
-                    id="tagInput"
-                    maxlength="25"
-                    autocomplete="off"
-                />
+    <button id="toggleBtn">🔄 Chuyển chế độ: Strict Limit (10)</button>
+
+    <div id="mode1" class="container-limit">
+        <h2 style="margin: 0;">Tags Limit (10)</h2>
+        <div class="tags-limit" id="tagsOutput1"></div>
+        <form id="formLimit">
+            <div class="input-wrap-limit">
+                <span class="material-symbols-outlined" style="color:#888; margin-left:5px">tag</span>
+                <input type="text" placeholder="Add a tag..." id="inputLimit" maxlength="25" autocomplete="off" />
             </div>
-            <small id="helperText">Add up to 10 tags for your post</small>
+            <small id="helperLimit" style="color:#888">Add up to 10 tags (0/10)</small>
         </form>
     </div>
 
-    <script>
-        const input = document.querySelector("#tagInput");
-        const tagForm = document.querySelector("#tagForm");
-        const output = document.querySelector(".tags");
-        const inputBox = document.querySelector("#inputBox");
-        const helperText = document.querySelector("#helperText");
+    <div id="mode2" class="container-choice hidden">
+        <h3>Enter choices divided by a comma (',').<br>Press enter when done.</h3>
+        <textarea id="textareaChoice" class="textarea-choice" placeholder="Gà, Vịt, Chó..."></textarea>
+        <div id="tagsOutput2" class="tags-choice"></div>
+    </div>
 
-        function renderTag(text) {
-            const tagHTML = `
-                <span class="tag">
+    <script>
+        const toggleBtn = document.getElementById('toggleBtn');
+        const mode1 = document.getElementById('mode1');
+        const mode2 = document.getElementById('mode2');
+        let isMode1 = true;
+
+        toggleBtn.addEventListener('click', () => {
+            isMode1 = !isMode1;
+
+            if (isMode1) {
+                mode1.classList.remove('hidden');
+                mode2.classList.add('hidden');
+                document.body.style.backgroundColor = "aliceblue";
+                toggleBtn.innerText = "🔄 Chuyển chế độ: Strict Limit (10)";
+            } else {
+                mode1.classList.add('hidden');
+                mode2.classList.remove('hidden');
+                document.body.style.backgroundColor = "#3498db";
+                toggleBtn.innerText = "🔄 Chuyển chế độ: Free Choice";
+                document.getElementById('textareaChoice').focus();
+            }
+        });
+
+        const inputLimit = document.getElementById("inputLimit");
+        const formLimit = document.getElementById("formLimit");
+        const outLimit = document.getElementById("tagsOutput1");
+        const helperLimit = document.getElementById("helperLimit");
+        
+        const MAX_TAGS = 10; 
+
+        function renderTagLimit(text) {
+            const html = `
+                <span class="tag-item-limit">
                     <b>${text}</b>
                     <span class="material-symbols-outlined remove-btn">close</span>
-                </span>
-            `;
-            output.insertAdjacentHTML('beforeend', tagHTML);
+                </span>`;
+            outLimit.insertAdjacentHTML('beforeend', html);
         }
-
-        tagForm.addEventListener('submit', (e) => {
-            e.preventDefault(); 
-            
-            const value = input.value.trim();
-
-            if (value === "") return;
-
-            if (output.children.length < 10) {
-                renderTag(value);
-                input.value = ""; 
-                checkLimit(); 
-            }
-        });
 
         function checkLimit() {
-            if (output.children.length >= 10) {
-                input.disabled = true;
-                input.placeholder = "Max limit reached!";
-                helperText.style.color = "red";
-                helperText.innerText = "You have reached the limit (10/10)";
+            const count = outLimit.children.length;
+            
+            if (count >= MAX_TAGS) {
+                inputLimit.disabled = true;
+                inputLimit.placeholder = "Max limit reached!";
+                helperLimit.style.color = "red";
+                helperLimit.innerText = `Limit reached (${MAX_TAGS}/${MAX_TAGS})`;
             } else {
-                input.disabled = false;
-                input.placeholder = "Add a tag...";
-                helperText.style.color = "#888";
-                helperText.innerText = `Add up to 10 tags (${output.children.length}/10)`;
+                inputLimit.disabled = false;
+                inputLimit.placeholder = "Add a tag...";
+                helperLimit.style.color = "#888";
+                helperLimit.innerText = `Add up to ${MAX_TAGS} tags (${count}/${MAX_TAGS})`;
             }
         }
 
-        output.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-btn')) {
-                e.target.closest('.tag').remove();
-                checkLimit(); 
+        formLimit.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const val = inputLimit.value.trim();
+            
+            if (val && outLimit.children.length < MAX_TAGS) {
+                renderTagLimit(val);
+                inputLimit.value = "";
+                checkLimit();
             }
         });
 
-        input.addEventListener('input', (e) => {
-            input.value = input.value.replace(/[^\w\u00C0-\u1EF9]/gu, "");
+        outLimit.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-btn')) {
+                e.target.closest('.tag-item-limit').remove();
+                checkLimit();
+            }
         });
 
+        inputLimit.addEventListener('input', () => {
+            inputLimit.value = inputLimit.value.replace(/[^\p{L}\p{N}]/gu, "");
+        });
+
+        const textChoice = document.getElementById('textareaChoice');
+        const outChoice = document.getElementById('tagsOutput2');
+
+        textChoice.addEventListener('keyup', (e) => {
+            createTagsChoice(e.target.value);
+            if(e.key === 'Enter') {
+                setTimeout(() => { e.target.value = ''; }, 10);
+            }
+        });
+
+        function createTagsChoice(input) {
+            const tags = input.split(',').filter(tag => tag.trim() !== '').map(tag => tag.trim());
+            outChoice.innerHTML = ''; 
+            tags.forEach(tag => {
+                const el = document.createElement('span');
+                el.classList.add('tag-item-choice');
+                el.innerText = tag;
+                outChoice.appendChild(el);
+            });
+        }
     </script>
 </body>
 </html>
