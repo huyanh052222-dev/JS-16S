@@ -146,7 +146,7 @@
 </head>
 <body style="background-color: aliceblue;">
 
-    <button id="toggleBtn">🔄 Chuyển chế độ: Strict Limit (10)</button>
+    <button id="toggleBtn">Chuyển chế độ: Strict Limit (10)</button>
 
     <div id="mode1" class="container-limit">
         <h2 style="margin: 0;">Tags Limit (10)</h2>
@@ -179,12 +179,12 @@
                 mode1.classList.remove('hidden');
                 mode2.classList.add('hidden');
                 document.body.style.backgroundColor = "aliceblue";
-                toggleBtn.innerText = "🔄 Chuyển chế độ: Strict Limit (10)";
+                toggleBtn.innerText = "Chuyển chế độ: Strict Limit (10)";
             } else {
                 mode1.classList.add('hidden');
                 mode2.classList.remove('hidden');
                 document.body.style.backgroundColor = "#3498db";
-                toggleBtn.innerText = "🔄 Chuyển chế độ: Free Choice";
+                toggleBtn.innerText = "Chuyển chế độ: Free Choice";
                 document.getElementById('textareaChoice').focus();
             }
         });
