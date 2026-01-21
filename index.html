@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tag Input Fixed</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        body {
+            margin: 0 auto;
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: aliceblue;
+        }
+
+        .tag-input {
+            background-color: #fff;
+            padding: 2.5em;
+            width: 100%;
+            max-width: 25em; 
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .tag-input h2 { margin: 0 0 10px 0; }
+
+        .input-wrap {
+            border: 1px #888 solid;
+            border-radius: 5px;
+            display: flex;
+            margin: 1.5em 0;
+            padding: 5px;
+            align-items: center;
+        }
+
+        .input-wrap input {
+            background: none;
+            border: none;
+            padding: 0.5em;
+            flex: 1; 
+            font-family: inherit;
+        }
+
+        .input-wrap input:focus { outline: none; }
+
+        .input-wrap span {
+            color: #888;
+            margin-left: 5px;
+        }
+
+        .tags {
+            margin-bottom: 1.5em;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .tag {
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            padding: 5px 10px;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        .tag b { margin-right: 5px; }
+
+        .tag .remove-btn {
+            font-size: 16px;
+            cursor: pointer;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .tag .remove-btn:hover { color: red; }
+        
+        .limit-reached { border-color: red; }
+    </style>
+</head>
+<body>
+    <div class="tag-input">
+        <h2>Tags</h2>
+        
+        <div class="tags"></div>
+
+        <form action="" id="tagForm">
+            <div class="input-wrap" id="inputBox">
+                <span class="material-symbols-outlined">tag</span>
+                <input 
+                    type="text"
+                    placeholder="Add a tag..."
+                    id="tagInput"
+                    maxlength="25"
+                    autocomplete="off"
+                />
+            </div>
+            <small id="helperText">Add up to 10 tags for your post</small>
+        </form>
+    </div>
+
+    <script>
+        const input = document.querySelector("#tagInput");
+        const tagForm = document.querySelector("#tagForm");
+        const output = document.querySelector(".tags");
+        const inputBox = document.querySelector("#inputBox");
+        const helperText = document.querySelector("#helperText");
+
+        function renderTag(text) {
+            const tagHTML = `
+                <span class="tag">
+                    <b>${text}</b>
+                    <span class="material-symbols-outlined remove-btn">close</span>
+                </span>
+            `;
+            output.insertAdjacentHTML('beforeend', tagHTML);
+        }
+
+        tagForm.addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            
+            const value = input.value.trim();
+
+            if (value === "") return;
+
+            if (output.children.length < 10) {
+                renderTag(value);
+                input.value = ""; 
+                checkLimit(); 
+            }
+        });
+
+        function checkLimit() {
+            if (output.children.length >= 10) {
+                input.disabled = true;
+                input.placeholder = "Max limit reached!";
+                helperText.style.color = "red";
+                helperText.innerText = "You have reached the limit (10/10)";
+            } else {
+                input.disabled = false;
+                input.placeholder = "Add a tag...";
+                helperText.style.color = "#888";
+                helperText.innerText = `Add up to 10 tags (${output.children.length}/10)`;
+            }
+        }
+
+        output.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-btn')) {
+                e.target.closest('.tag').remove();
+                checkLimit(); 
+            }
+        });
+
+        input.addEventListener('input', (e) => {
+            input.value = input.value.replace(/[^\w\u00C0-\u1EF9]/gu, "");
+        });
+
+    </script>
+</body>
+</html>
