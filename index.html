@@ -16,6 +16,7 @@
             align-items: center;
             justify-content: center;
             transition: background-color 0.5s ease;
+            background-color: aliceblue;
         }
 
         .material-symbols-outlined {
@@ -144,7 +145,7 @@
         }
     </style>
 </head>
-<body style="background-color: aliceblue;">
+<body>
 
     <button id="toggleBtn">Chuyển chế độ: Strict Limit (10)</button>
 
@@ -153,7 +154,7 @@
         <div class="tags-limit" id="tagsOutput1"></div>
         <form id="formLimit">
             <div class="input-wrap-limit">
-                <span class="material-symbols-outlined" style="color:#888; margin-left:5px">tag</span>
+                <span class="material-symbols-outlined" style="color:#673d3d; margin-left:5px">tag</span> <!--De tuy chinh font cua gg-->
                 <input type="text" placeholder="Add a tag..." id="inputLimit" maxlength="25" autocomplete="off" />
             </div>
             <small id="helperLimit" style="color:#888">Add up to 10 tags (0/10)</small>
@@ -161,7 +162,7 @@
     </div>
 
     <div id="mode2" class="container-choice hidden">
-        <h3>Enter choices divided by a comma (',').<br>Press enter when done.</h3>
+        <h3>Enter choices divided by a comma (',').<br>Press ENTER when done.</h3>
         <textarea id="textareaChoice" class="textarea-choice" placeholder="Gà, Vịt, Chó..."></textarea>
         <div id="tagsOutput2" class="tags-choice"></div>
     </div>
