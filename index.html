@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tag Input</title>
+    <title>Tag Input & Random Picker</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     
     <style>
@@ -41,7 +41,6 @@
         #toggleBtn:active{ 
             transform: scale(0.95); 
         }
-
 
         .hidden{ 
             display: none !important; 
@@ -99,7 +98,6 @@
         }
         .tag-item-limit .remove-btn:hover{
             color: red; 
-        
         }
 
         .container-choice {
@@ -107,7 +105,6 @@
             color: #fff;
             width: 100%;
             max-width: 700px;
-
         }
 
         .container-choice h3{ 
@@ -142,6 +139,14 @@
             font-size: 16px;
             background-color: #f0932b;
             color: #fff;
+            transition: all 0.1s ease;
+        }
+        
+        .tag-item-choice.highlight {
+            background-color: #273c75;
+            font-weight: bold;
+            transform: scale(1.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
     </style>
 </head>
@@ -154,7 +159,7 @@
         <div class="tags-limit" id="tagsOutput1"></div>
         <form id="formLimit">
             <div class="input-wrap-limit">
-                <span class="material-symbols-outlined" style="color:#673d3d; margin-left:5px">tag</span> <!--De tuy chinh font cua gg-->
+                <span class="material-symbols-outlined" style="color:#673d3d; margin-left:5px">tag</span>
                 <input type="text" placeholder="Add a tag..." id="inputLimit" maxlength="25" autocomplete="off" />
             </div>
             <small id="helperLimit" style="color:#888">Add up to 10 tags (0/10)</small>
@@ -162,7 +167,7 @@
     </div>
 
     <div id="mode2" class="container-choice hidden">
-        <h3>Enter choices divided by a comma (',').<br>Press ENTER when done.</h3>
+        <h3>Enter choices divided by a comma (',').<br>Press ENTER to Pick a Winner!</h3>
         <textarea id="textareaChoice" class="textarea-choice" placeholder="Gà, Vịt, Chó..."></textarea>
         <div id="tagsOutput2" class="tags-choice"></div>
     </div>
@@ -185,7 +190,7 @@
                 mode1.classList.add('hidden');
                 mode2.classList.remove('hidden');
                 document.body.style.backgroundColor = "#3498db";
-                toggleBtn.innerText = "Chuyển chế độ: Free Choice";
+                toggleBtn.innerText = "Chuyển chế độ: Random Choice Picker";
                 document.getElementById('textareaChoice').focus();
             }
         });
@@ -194,7 +199,6 @@
         const formLimit = document.getElementById("formLimit");
         const outLimit = document.getElementById("tagsOutput1");
         const helperLimit = document.getElementById("helperLimit");
-        
         const MAX_TAGS = 10; 
 
         function renderTagLimit(text) {
@@ -208,7 +212,6 @@
 
         function checkLimit() {
             const count = outLimit.children.length;
-            
             if (count >= MAX_TAGS) {
                 inputLimit.disabled = true;
                 inputLimit.placeholder = "Max limit reached!";
@@ -225,7 +228,6 @@
         formLimit.addEventListener('submit', (e) => {
             e.preventDefault();
             const val = inputLimit.value.trim();
-            
             if (val && outLimit.children.length < MAX_TAGS) {
                 renderTagLimit(val);
                 inputLimit.value = "";
@@ -248,9 +250,11 @@
         const outChoice = document.getElementById('tagsOutput2');
 
         textChoice.addEventListener('keyup', (e) => {
-            createTagsChoice(e.target.value);
-            if(e.key === 'Enter') {
+            if (e.key === 'Enter') {
                 setTimeout(() => { e.target.value = ''; }, 10);
+                randomSelect();
+            } else {
+                createTagsChoice(e.target.value);
             }
         });
 
@@ -263,6 +267,44 @@
                 el.innerText = tag;
                 outChoice.appendChild(el);
             });
+        }
+
+        function randomSelect() {
+            const times = 30; 
+            
+            if(document.querySelectorAll('.tag-item-choice').length === 0) return;
+
+            const interval = setInterval(() => {
+                const randomTag = pickRandomTag();
+                
+                if (randomTag) {
+                    highlightTag(randomTag);
+                    setTimeout(() => {
+                        unHighlightTag(randomTag);
+                    }, 100);
+                }
+            }, 100);
+
+            setTimeout(() => {
+                clearInterval(interval);
+                setTimeout(() => {
+                    const randomTag = pickRandomTag();
+                    highlightTag(randomTag); 
+                }, 100);
+            }, times * 100);
+        }
+
+        function pickRandomTag() {
+            const tags = document.querySelectorAll('.tag-item-choice');
+            return tags[Math.floor(Math.random() * tags.length)];
+        }
+
+        function highlightTag(tag) {
+            if(tag) tag.classList.add('highlight');
+        }
+
+        function unHighlightTag(tag) {
+            if(tag) tag.classList.remove('highlight');
         }
     </script>
 </body>
